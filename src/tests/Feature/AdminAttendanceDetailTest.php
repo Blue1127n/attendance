@@ -97,8 +97,8 @@ class AdminAttendanceDetailTest extends TestCase
 
         $response = $this->post("/admin/attendance/{$attendance->id}/update", $postData);
 
-        $response->assertSessionHasErrors(['breaks.0.end']); //'breaks.0.end' というキーでバリデーションされる（複数対応なので配列形式）
-        $this->assertEquals('休憩時間が勤務時間外です', session('errors')->first('breaks.0.end'));
+        $response->assertSessionHasErrors(['breaks.0.start']); //'breaks.0.end' というキーでバリデーションされる（複数対応なので配列形式）
+        $this->assertEquals('休憩時間が勤務時間外です', session('errors')->first('breaks.0.start'));
     }
 
     //休憩終了時間が退勤時間より後になっている場合、エラーメッセージが表示される
@@ -119,8 +119,8 @@ class AdminAttendanceDetailTest extends TestCase
 
         $response = $this->post("/admin/attendance/{$attendance->id}/update", $postData);
 
-        $response->assertSessionHasErrors(['breaks.0.end']);
-        $this->assertEquals('休憩時間が勤務時間外です', session('errors')->first('breaks.0.end'));
+        $response->assertSessionHasErrors(['breaks.0.start']);
+        $this->assertEquals('休憩時間が勤務時間外です', session('errors')->first('breaks.0.start'));
     }
 
     //備考欄が未入力の場合のエラーメッセージが表示される

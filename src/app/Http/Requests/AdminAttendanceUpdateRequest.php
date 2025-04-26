@@ -45,29 +45,26 @@ class AdminAttendanceUpdateRequest extends FormRequest
         $clockIn = $this->input('clock_in');
         $clockOut = $this->input('clock_out');
 
-        // 出勤・退勤の不正チェック どちらかが未入力、または順序がおかしい場合も含めてまとめてバリデーション
         if (!$clockIn || !$clockOut || $clockIn >= $clockOut) {
             $validator->errors()->add('clock_in', '出勤時間もしくは退勤時間が不適切な値です');
         }
 
-        //// 休憩時間のチェック
         foreach ($this->input('breaks', []) as $index => $break) {
             $start = $break['start'] ?? null;
             $end = $break['end'] ?? null;
 
             if ($start && $end) {
-                if ($start >= $end) {
-                    $validator->errors()->add("breaks.$index.start", '休憩時間が不適切な値です'); //開始時間が終了時間よりも後、または同じ → エラー
+                $startTime = Carbon::parse($start);
+                $endTime = Carbon::parse($end);
+                $clockInTime = Carbon::parse($clockIn);
+                $clockOutTime = Carbon::parse($clockOut);
+
+                if ($startTime >= $endTime) {
+                    $validator->errors()->add("breaks.$index.start", '休憩時間が不適切な値です');
                 }
 
-                //休憩開始時間が出勤時間より早い → エラー（breaks.$index.start）
-                if ($clockIn && $start < $clockIn) {
+                if ($startTime < $clockInTime || $endTime > $clockOutTime) {
                     $validator->errors()->add("breaks.$index.start", '休憩時間が勤務時間外です');
-                }
-
-                //休憩終了時間が退勤時間より遅い → エラー（breaks.$index.end）
-                if ($clockOut && $end > $clockOut) {
-                    $validator->errors()->add("breaks.$index.end", '休憩時間が勤務時間外です');
                 }
                 }
             }
