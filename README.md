@@ -8,7 +8,7 @@
 
   1.GitHub からクローン  
 
-    `git@github.com:Blue1127n/attendance-manegement.git`   
+    `git clone git@github.com:Blue1127n/attendance-manegement.git`   
 
   2.プロジェクトディレクトリに移動  
 
@@ -26,6 +26,7 @@
 
     `docker-compose up -d --build`  
     `code .`  
+    `cd src`
 
 
 **Laravel環境構築**  
@@ -42,24 +43,28 @@
     以下のコマンドを実行して、Laravelのログ・キャッシュ用フォルダに書き込み権限を付与してください
 
     ```bash
-    cd src
     chmod -R 777 storage
     chmod -R 777 bootstrap/cache
+    exit
     ```  
 
   4.「.env」ファイルを作成  
 
     `cp .env.example .env`  
 
-  5.アプリケーションキーの作成  
+  5.PHPコンテナ内にログイン  
+
+    `docker-compose exec php bash`  
+
+  6.アプリケーションキーの作成  
 
     `php artisan key:generate`  
 
-  6.マイグレーションの実行  
+  7.マイグレーションの実行  
 
     `php artisan migrate`  
 
-  7.シーディングの実行  
+  8.シーディングの実行  
 
     `php artisan db:seed`  
 
